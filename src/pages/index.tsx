@@ -4,9 +4,11 @@ import { inferProcedureInput } from '@trpc/server';
 import Link from 'next/link';
 import { Fragment } from 'react';
 import type { AppRouter } from '~/server/routers/_app';
-
+import { useRef } from 'react';
 const IndexPage: NextPageWithLayout = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const utils = trpc.useContext();
+  //trpc.post.add
   const postsQuery = trpc.post.list.useInfiniteQuery(
     {
       limit: 5,
@@ -24,7 +26,8 @@ const IndexPage: NextPageWithLayout = () => {
       await utils.post.list.invalidate();
     },
   });
-
+  const users = trpc.user.userList.useQuery().data;
+  console.log('users:', users);
   // prefetch all posts for instant navigation
   // useEffect(() => {
   //   const allPosts = postsQuery.data?.pages.flatMap((page) => page.items) ?? [];
@@ -32,10 +35,26 @@ const IndexPage: NextPageWithLayout = () => {
   //     void utils.post.byId.prefetch({ id });
   //   }
   // }, [postsQuery.data, utils]);
-
+  const addUerFetch = trpc.user.userCreate.useMutation({
+    async onSuccess() {
+      // refetches posts after a post is added
+      await utils.user.userList.invalidate();
+    },
+  });
+  const addUser = () => {
+    const val: string = inputRef.current!.value;
+    const newUser = addUerFetch.mutate({ name: val });
+  };
   return (
     <>
       <h1>Welcome to your tRPC starter!</h1>
+      <h2>add user</h2>
+      <input type="text" ref={inputRef} />
+      <button onClick={() => addUser()}>add users</button>
+      <p>userlist:</p>
+      {users?.map((item) => (
+        <p key={item.name}>{item.name}</p>
+      ))}
       <p>
         If you get stuck, check <a href="https://trpc.io">the docs</a>, write a
         message in our <a href="https://trpc.io/discord">Discord-channel</a>, or

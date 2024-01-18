@@ -85,6 +85,7 @@ export const postRouter = router({
           message: `No post with id '${id}'`,
         });
       }
+      console.log('post=====', post);
       return post;
     }),
   add: publicProcedure
