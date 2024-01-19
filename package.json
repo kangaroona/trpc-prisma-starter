@@ -40,8 +40,9 @@
     "singleQuote": true
   },
   "dependencies": {
+    "@huolala-tech/page-spy": "^1.5.7",
     "@prisma/client": "^4.7.1",
-    "@tanstack/react-query": "^4.3.8",
+    "@tanstack/react-query": "^4.36.1",
     "@trpc/client": "^10.8.1",
     "@trpc/next": "^10.8.1",
     "@trpc/react-query": "^10.8.1",

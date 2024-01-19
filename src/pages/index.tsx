@@ -4,10 +4,13 @@ import { inferProcedureInput } from '@trpc/server';
 import Link from 'next/link';
 import { Fragment } from 'react';
 import type { AppRouter } from '~/server/routers/_app';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import type { User } from '~/types/users';
+
 const IndexPage: NextPageWithLayout = () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const utils = trpc.useContext();
+  const [userList, setUerList] = useState<User[]>([]);
+  const utils = trpc.useUtils();
   //trpc.post.add
   const postsQuery = trpc.post.list.useInfiniteQuery(
     {
@@ -21,13 +24,17 @@ const IndexPage: NextPageWithLayout = () => {
   );
 
   const addPost = trpc.post.add.useMutation({
-    async onSuccess() {
+    async onSuccess(data) {
       // refetches posts after a post is added
       await utils.post.list.invalidate();
+      // setUerList([...userList]);
     },
   });
-  const users = trpc.user.userList.useQuery().data;
-  console.log('users:', users);
+  const getUserList = trpc.user.userList.useQuery();
+  useEffect(() => {
+    setUerList(getUserList.data as User[]);
+  }, []);
+
   // prefetch all posts for instant navigation
   // useEffect(() => {
   //   const allPosts = postsQuery.data?.pages.flatMap((page) => page.items) ?? [];
@@ -36,7 +43,9 @@ const IndexPage: NextPageWithLayout = () => {
   //   }
   // }, [postsQuery.data, utils]);
   const addUerFetch = trpc.user.userCreate.useMutation({
-    async onSuccess() {
+    async onSuccess(data) {
+      console.log('suc', data);
+      setUerList([...userList, { id: data.id, name: data.name }]);
       // refetches posts after a post is added
       await utils.user.userList.invalidate();
     },
@@ -52,7 +61,7 @@ const IndexPage: NextPageWithLayout = () => {
       <input type="text" ref={inputRef} />
       <button onClick={() => addUser()}>add users</button>
       <p>userlist:</p>
-      {users?.map((item) => (
+      {userList?.map((item) => (
         <p key={item.name}>{item.name}</p>
       ))}
       <p>

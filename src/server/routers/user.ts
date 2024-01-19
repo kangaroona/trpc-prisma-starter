@@ -1,7 +1,6 @@
 import { router, publicProcedure } from '../trpc';
 import { z } from 'zod';
-type User = { id: string; name: string };
-
+import type { User } from '~/types/users';
 // Imaginary database
 const users: User[] = [];
 const db = {

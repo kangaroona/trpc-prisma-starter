@@ -1,9 +1,9 @@
 import type { NextPage } from 'next';
 import type { AppType, AppProps } from 'next/app';
-import type { ReactElement, ReactNode } from 'react';
+import { useEffect, type ReactElement, type ReactNode } from 'react';
 import { DefaultLayout } from '~/components/DefaultLayout';
 import { trpc } from '~/utils/trpc';
-
+// import PageSpy from '@huolala-tech/page-spy';
 export type NextPageWithLayout<
   TProps = Record<string, unknown>,
   TInitialProps = TProps,
