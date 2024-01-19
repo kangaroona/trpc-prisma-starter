@@ -16,7 +16,7 @@
     "dx": "run-p dx:* --print-label",
     "dev": "pnpm dx:next",
     "prep-sqlite": "run-s generate-sqlite migrate-sqlite",
-    "build-sqlite": "npm prep-sqlite && next build",
+    "build-sqlite": "pnpm prep-sqlite && next build",
     "build-postgres": "run-s generate-postgres migrate && next build",
     "build": "pnpm build-sqlite",
     "start": "next start",
